@@ -121,6 +121,20 @@ docker exec <container-name> sh -c "/usr/share/arc/arc-arex-start; /usr/share/ar
 ```
 
 
+## Check that things are working
+On the docker host (or anywhere else where you have installed the ARC client) do
+
+```
+arcinfo -C <hostname-or-arc-ce>
+```
+
+If all ok, attempt to submit a job
+
+```
+arctest -J 1 -C <hostname-of-arc-ce>
+```
+
+
 
 ## Problems  (solved)
 These problems were solved once I added the above daemon.json config
