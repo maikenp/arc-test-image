@@ -11,7 +11,26 @@ sudo docker run -it -p 443  --entrypoint /bin/bash arc
 <container-hash># . ./entrypoint_deploy.sh
 ```
 
-## Problems 
+You need the following docker daemon.json config - change data-root to suit your system. 
+
+```
+[rocky@galaxy-arc-test-fresh arc_container]$ cat /etc/docker/daemon.json 
+{
+    "data-root": "/docker-data",
+    "storage-driver": "overlay2",
+    "default-ulimits": {
+    "nofile": {
+      "Hard": 64000,
+      "Name": "nofile",
+      "Soft": 64000
+    }
+  }
+}
+```
+
+## Solved Problems 
+These problems were solved once I added the above daemon.json config
+
 However, the container is not working as it should. The problems are
 
 1. infoprovider takes ages to get started (symptom no /var/log/arc/infoprovider.log nor /var/spool/arc/jobstatus/info.xml file)
