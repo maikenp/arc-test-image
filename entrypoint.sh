@@ -7,3 +7,5 @@ cd /
 
 printf "Importing entrypoint_deploy.sh"
 . ./entrypoint_deploy.sh
+
+sleep infinity

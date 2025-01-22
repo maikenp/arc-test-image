@@ -25,14 +25,16 @@ arcproxy
 export BEARER_TOKEN=$(arcctl test-jwt token)
 #end setup user authentication
 
-printf "\n########################################################################\n"
-printf "## Start ARC\n"
-printf "\n#######################################################################\n"
+#set up CAs of IGFT
+arcctl deploy igtf-ca classic --installrepo igtf
 
+#start AREX
 printf "\n/usr/share/arc/arc-arex-start\n"
 /usr/share/arc/arc-arex-start
 
+#start AREX WS
 printf "\n/usr/share/arc/arc-arex-ws-start\n"
 /usr/share/arc/arc-arex-ws-start 
 
-sleep infinity &
+sleep infinity 
+

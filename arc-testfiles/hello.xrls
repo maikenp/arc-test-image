@@ -1,10 +1,10 @@
-&(executable=/arc-testfiles/runhello.sh)
+&(executable=./runhello.sh)
 (jobname=hello_autodeploy)
 (stdout=std.out)
 (stderr=std.err)
 (cpuTime="1 hours")
 (memory="1000")
 (inputfiles=
-("localfile.txt" "/arc-testfiles/file.txt" )
+("localfile.txt" "./file.txt" )
 ("remotefile.txt" "http://download.nordugrid.org/repos/7/rocky/9/source/updates/repodata/repomd.xml"))
 (outputfiles=("output.txt" "" ))
