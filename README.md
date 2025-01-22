@@ -131,7 +131,7 @@ arcinfo -C <hostname-or-arc-ce>
 If all ok, attempt to submit a job
 
 ```
-arctest -J 1 -C <hostname-of-arc-ce>
+arctest -J 1 -d DEBUG -C <hostname-of-arc-ce>
 ```
 
 
