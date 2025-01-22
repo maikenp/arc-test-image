@@ -1,15 +1,41 @@
-```
-sudo docker build -t arc .
-sudo docker run -it   -p 443 arc
-```
+## Prepare
 
-Or for full control
+Create an ```/etc/arc.conf``` in your docker host server - replace the hostname with your fqdn 
 
 ```
-sudo docker run -it -p 443  --entrypoint /bin/bash arc
-<container-hash># . ./entrypoint_install_rhel.sh
-<container-hash># . ./entrypoint_deploy.sh
+[common]
+hostname=galaxy-arc-test-fresh.itf.uiocloud.no
+
+[authgroup: iam]
+authtokens = * https://wlcg.cloud.cnaf.infn.it/ * * *
+authtokens = * https://aai.egi.eu/oidc/ * * *
+authtokens = * https://aai.egi.eu/auth/realms/egi * * *
+
+[mapping]
+map_to_user = iam nobody:nobody
+
+[lrms]
+lrms = fork
+
+[arex]
+loglevel = DEBUG 
+
+[arex/data-staging]
+logfile=/var/log/arc/datastaging.log
+
+[arex/ws]
+[arex/ws/jobs]
+
+[infosys]
+[infosys/glue2]
+
+
+[infosys/cluster]
+
+[queue:fork]
+
 ```
+
 
 You need the following docker daemon.json config - change data-root to suit your system. 
 
@@ -28,7 +54,31 @@ You need the following docker daemon.json config - change data-root to suit your
 }
 ```
 
-## Solved Problems 
+
+To be able to submit a job from the host server using the test-CA created by ARC in the container, you need to bind-mount the /etc/grid-security folder which will be created by ARC. So create this folder on the host server:
+
+```
+sudo mkdir /etc/grid-security
+```
+
+
+### Build and run
+```
+sudo docker build -t arc .
+sudo docker run -d  -p 443:443 -v "/etc/arc.conf:/etc/arc.conf:rw" -v "/etc/grid-security:/etc/grid-security:rw" arc
+```
+
+Or for full control run the entrypoint files manually in the container: 
+
+```
+sudo docker run -it -p 443:443 -v "/etc/arc.conf:/etc/arc.conf:rw" -v "/etc/grid-security:/etc/grid-security:rw"  --entrypoint /bin/bash arc
+<container-hash># . ./entrypoint_install_rhel.sh
+<container-hash># . ./entrypoint_deploy.sh
+```
+
+
+
+## Problems  (solved)
 These problems were solved once I added the above daemon.json config
 
 However, the container is not working as it should. The problems are
