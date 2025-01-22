@@ -1,4 +1,4 @@
-## Prepare
+## 1. Prepare
 
 Create an ```/etc/arc.conf``` in your docker host server - replace the hostname with your fqdn 
 
@@ -62,7 +62,7 @@ sudo mkdir /etc/grid-security
 ```
 
 
-### Build and run
+### 2. Build and run
 ```
 sudo docker build -t arc .
 sudo docker run -d  -p 443:443 -v "/etc/arc.conf:/etc/arc.conf:rw" -v "/etc/grid-security:/etc/grid-security:rw" arc
@@ -71,14 +71,14 @@ sudo docker run -d  -p 443:443 -v "/etc/arc.conf:/etc/arc.conf:rw" -v "/etc/grid
 Or for full control run the entrypoint files manually in the container: 
 
 ```
-sudo docker run -it -p 443:443 -v "/etc/arc.conf:/etc/arc.conf:rw" -v "/etc/grid-security:/etc/grid-security:rw"  --entrypoint /bin/bash arc
+sudo docker run --name arc-ce -it -p 443:443 -v "/etc/arc.conf:/etc/arc.conf:rw" -v "/etc/grid-security:/etc/grid-security:rw"  --entrypoint /bin/bash arc
 <container-hash># . ./entrypoint_install_rhel.sh
 <container-hash># . ./entrypoint_deploy.sh
 ```
 
 ## Submit a test-job from outside the container
 
-### 1. Install the ARC client on the docker host
+### 3. Install the ARC client on the docker host
 
 Set up the Nordugrid nightly repo following instructions: http://www.nordugrid.org/arc/arc7/admins/tutorial/nightlies-repo.html
 
@@ -89,22 +89,22 @@ sudo dnf install -y nordugrid-arc-client nordugrid-arc-arcctl
 ```
 
 
-### 2. Set up authentication 
+### 4. Set up authentication 
 To be allowed to submit a job to ARC you must configure authentication. 
 
 If you have a real token, and have already configured arc to accept this token as per: http://www.nordugrid.org/arc/arc7/admins/reference.html#authtokens and also making sure you are mapping to a user as per: http://www.nordugrid.org/arc/arc7/admins/reference.html#mapping-block, you don't need to do anything extra. 
 
 If you are relying on a test-token produced by ARC, the following steps must be followed: 
 
-#### 2a. 
+#### 4a. 
 As a normal user on the host do:
 ```arcctl test-jwt init```
 
-#### 2b. 
-Copy the output from 2a. Go inside the docker container and paste the command. Example: 
+#### 4b. 
+Copy the output from 2a. Go inside the docker container and paste the command. Example - using the docker container name `arc-ce` which is what we used to run the container in Step 2. 
 
 ```
-docker exec <container-name> sh -c "arcctl deploy jwt-issuer --deploy-conf test-jwt://H4sIAPkAkWcC/7XTUa+aMBQH8O/C8xSviopvKDpU1AkKyrIQhKIt0JZSBDF+99Xd3ewLuKeek5P+/mnTPqQM8CAKeCCNHxIsihIwaSxdOafFWJYvQRrU91bAwhYHBW/FDBTXNuRxu4QkTEkZtTGRxVh+jVHF5cFgFPZH5w/pm8RJArAPcEQJxPwtqvzHFHZZAAZxTN7Mf7EiQZiMFBSEHJJ3n+KfLYKCkl8Jg03wH4K+bCByUJUUfsnge+SXJj0/1dfTScBdrD8fEhC+ttMmIjGBkWj+bn31/C56y9ZEjUVVemGt5AZWYZrqM+rTHGX8cFAceEZDsJgetkdg91v7cx3ONxO1W5iOYtFV+gMSpOpLrbNSBtr3qutl980p7k8pN6laZqsTbVwvRDbCYRWyIsOkyba6adP0rHuLvVnHa/2W+9OFfrV01UcdMhiuLM+2u8fwpBiLGlijfWMcTHuikk6d9rxOdGgpajSvUFhnHOHdFG2ZsWMXoKbLWbw3HRJvwebAILlu+tQu7thY0pzQeScgM3erBpdjYHnGcj4Mb1gziatpqGehc+nuHB7ot8lwCyJLXSlOBROln63NfDnqVuvk1FvfckerMqM6u7MeW2fThK2nQ8c9HUEz8ydJ7n5c8PLS0nGTYzPaff4Ocb0FvEjPX8/nby8q9wDkAwAA"
+docker exec arc-ce sh -c "arcctl deploy jwt-issuer --deploy-conf test-jwt://H4sIAPkAkWcC/7XTUa+aMBQH8O/C8xSviopvKDpU1AkKyrIQhKIt0JZSBDF+99Xd3ewLuKeek5P+/mnTPqQM8CAKeCCNHxIsihIwaSxdOafFWJYvQRrU91bAwhYHBW/FDBTXNuRxu4QkTEkZtTGRxVh+jVHF5cFgFPZH5w/pm8RJArAPcEQJxPwtqvzHFHZZAAZxTN7Mf7EiQZiMFBSEHJJ3n+KfLYKCkl8Jg03wH4K+bCByUJUUfsnge+SXJj0/1dfTScBdrD8fEhC+ttMmIjGBkWj+bn31/C56y9ZEjUVVemGt5AZWYZrqM+rTHGX8cFAceEZDsJgetkdg91v7cx3ONxO1W5iOYtFV+gMSpOpLrbNSBtr3qutl980p7k8pN6laZqsTbVwvRDbCYRWyIsOkyba6adP0rHuLvVnHa/2W+9OFfrV01UcdMhiuLM+2u8fwpBiLGlijfWMcTHuikk6d9rxOdGgpajSvUFhnHOHdFG2ZsWMXoKbLWbw3HRJvwebAILlu+tQu7thY0pzQeScgM3erBpdjYHnGcj4Mb1gziatpqGehc+nuHB7ot8lwCyJLXSlOBROln63NfDnqVuvk1FvfckerMqM6u7MeW2fThK2nQ8c9HUEz8ydJ7n5c8PLS0nGTYzPaff4Ocb0FvEjPX8/nby8q9wDkAwAA"
 ```
 
 This will set up an authgroups for this token and do the mapping for you - see files in ```/etc/arc.conf.d/```. 
@@ -112,20 +112,20 @@ This will set up an authgroups for this token and do the mapping for you - see f
 Now ARC needs to be restarted. But you first have to kill the running ARC processe
 
 ```
-docker exec <container-name>  ps -eaf | grep sbin/arched | awk '{print $2}' | xargs docker exec <container-name> kill -9 
+docker exec arc-ce ps -eaf | grep sbin/arched | awk '{print $2}' | xargs docker exec arc-ce kill -9 
 ```
 
 Restart ARC:
 ```
-docker exec <container-name> sh -c "/usr/share/arc/arc-arex-start; /usr/share/arc/arc-arex-ws-start"
+docker exec arc-ce sh -c "/usr/share/arc/arc-arex-start; /usr/share/arc/arc-arex-ws-start"
 ```
 
 
-## Check that things are working
+## 5. Check that things are working
 On the docker host (or anywhere else where you have installed the ARC client) do
 
 ```
-arcinfo -C <hostname-or-arc-ce>
+arcinfo -C <hostname-of-arc-ce>
 ```
 
 If all ok, attempt to submit a job
