@@ -16,12 +16,14 @@ However, the container is not working as it should. The problems are
 
 1. infoprovider takes ages to get started (symptom no /var/log/arc/infoprovider.log nor /var/spool/arc/jobstatus/info.xml file)
 2. Not sure if this is the actual reason for the problems, but there are 3 instead of 1 process starting when running ```/usr/share/arc/arc-arex``` (and as expected 1 process for ```/usr/share/arc/arc-arex-ws```)
+3. 
 ```
 [root@06e20320cbff /]# ps aux | grep -v grep | grep arched
 root         319  0.0  0.2 256832 19004 ?        Ssl  18:34   0:00 /usr/sbin/arched -c /tmp/arex.xml.otEzl5
 root         467  0.0  0.2 119140 16816 ?        Ssl  18:34   0:00 /usr/sbin/arched -c /tmp/arex.xml.vnOH6G
 root         508 58.1  0.2 256832 19004 ?        R    18:43   2:44 /usr/sbin/arched -c /tmp/arex.xml.otEzl5
 root         509 51.1  0.2 256832 19004 ?        R    18:43   2:02 /usr/sbin/arched -c /tmp/arex.xml.otEzl5
+```
 
 4. Once infoprovider finally has run - arcinfo or arcsub stops after "Loaded /usr/lib64/arc/libmcctls.so":
 
