@@ -65,7 +65,7 @@ sudo mkdir /etc/grid-security
 ### 2. Build and run
 ```
 sudo docker build -t arc .
-sudo docker run -d  -p 443:443 -v "/etc/arc.conf:/etc/arc.conf:rw" -v "/etc/grid-security:/etc/grid-security:rw" arc
+sudo docker run --name arc-ce -d  -p 443:443 -v "/etc/arc.conf:/etc/arc.conf:rw" -v "/etc/grid-security:/etc/grid-security:rw" arc
 ```
 
 Or for full control run the entrypoint files manually in the container: 
@@ -101,10 +101,15 @@ As a normal user on the host do:
 ```arcctl test-jwt init```
 
 #### 4b. 
-Copy the output from 2a. Go inside the docker container and paste the command. Example - using the docker container name `arc-ce` which is what we used to run the container in Step 2. 
+Copy the output from 2a. Now you must execute the output of 4a in the container. 
 
 ```
-docker exec arc-ce sh -c "arcctl deploy jwt-issuer --deploy-conf test-jwt://H4sIAPkAkWcC/7XTUa+aMBQH8O/C8xSviopvKDpU1AkKyrIQhKIt0JZSBDF+99Xd3ewLuKeek5P+/mnTPqQM8CAKeCCNHxIsihIwaSxdOafFWJYvQRrU91bAwhYHBW/FDBTXNuRxu4QkTEkZtTGRxVh+jVHF5cFgFPZH5w/pm8RJArAPcEQJxPwtqvzHFHZZAAZxTN7Mf7EiQZiMFBSEHJJ3n+KfLYKCkl8Jg03wH4K+bCByUJUUfsnge+SXJj0/1dfTScBdrD8fEhC+ttMmIjGBkWj+bn31/C56y9ZEjUVVemGt5AZWYZrqM+rTHGX8cFAceEZDsJgetkdg91v7cx3ONxO1W5iOYtFV+gMSpOpLrbNSBtr3qutl980p7k8pN6laZqsTbVwvRDbCYRWyIsOkyba6adP0rHuLvVnHa/2W+9OFfrV01UcdMhiuLM+2u8fwpBiLGlijfWMcTHuikk6d9rxOdGgpajSvUFhnHOHdFG2ZsWMXoKbLWbw3HRJvwebAILlu+tQu7thY0pzQeScgM3erBpdjYHnGcj4Mb1gziatpqGehc+nuHB7ot8lwCyJLXSlOBROln63NfDnqVuvk1FvfckerMqM6u7MeW2fThK2nQ8c9HUEz8ydJ7n5c8PLS0nGTYzPaff4Ocb0FvEjPX8/nby8q9wDkAwAA"
+sudo docker exec <container-name> sh -c "<here you paste in the arcctl deploy from 4a>"
+```
+
+Example shown from the host docker server and using the docker container name `arc-ce` which is the name we gave the container that we started in Step 2. 
+```
+sudo docker exec arc-ce sh -c "arcctl deploy jwt-issuer --deploy-conf test-jwt://H4sIAPkAkWcC/7XTUa+aMBQH8O/C8xSviopvKDpU1AkKyrIQhKIt0JZSBDF+99Xd3ewLuKeek5P+/mnTPqQM8CAKeCCNHxIsihIwaSxdOafFWJYvQRrU91bAwhYHBW/FDBTXNuRxu4QkTEkZtTGRxVh+jVHF5cFgFPZH5w/pm8RJArAPcEQJxPwtqvzHFHZZAAZxTN7Mf7EiQZiMFBSEHJJ3n+KfLYKCkl8Jg03wH4K+bCByUJUUfsnge+SXJj0/1dfTScBdrD8fEhC+ttMmIjGBkWj+bn31/C56y9ZEjUVVemGt5AZWYZrqM+rTHGX8cFAceEZDsJgetkdg91v7cx3ONxO1W5iOYtFV+gMSpOpLrbNSBtr3qutl980p7k8pN6laZqsTbVwvRDbCYRWyIsOkyba6adP0rHuLvVnHa/2W+9OFfrV01UcdMhiuLM+2u8fwpBiLGlijfWMcTHuikk6d9rxOdGgpajSvUFhnHOHdFG2ZsWMXoKbLWbw3HRJvwebAILlu+tQu7thY0pzQeScgM3erBpdjYHnGcj4Mb1gziatpqGehc+nuHB7ot8lwCyJLXSlOBROln63NfDnqVuvk1FvfckerMqM6u7MeW2fThK2nQ8c9HUEz8ydJ7n5c8PLS0nGTYzPaff4Ocb0FvEjPX8/nby8q9wDkAwAA"
 ```
 
 This will set up an authgroups for this token and do the mapping for you - see files in ```/etc/arc.conf.d/```. 
@@ -112,12 +117,12 @@ This will set up an authgroups for this token and do the mapping for you - see f
 Now ARC needs to be restarted. But you first have to kill the running ARC processe
 
 ```
-docker exec arc-ce ps -eaf | grep sbin/arched | awk '{print $2}' | xargs docker exec arc-ce kill -9 
+sudo docker exec arc-ce ps -eaf | grep sbin/arched | awk '{print $2}' | xargs sudo docker exec arc-ce kill -9 
 ```
 
 Restart ARC:
 ```
-docker exec arc-ce sh -c "/usr/share/arc/arc-arex-start; /usr/share/arc/arc-arex-ws-start"
+sudo docker exec arc-ce sh -c "/usr/share/arc/arc-arex-start; /usr/share/arc/arc-arex-ws-start"
 ```
 
 
