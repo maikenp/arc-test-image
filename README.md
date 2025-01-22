@@ -133,6 +133,17 @@ On the docker host (or anywhere else where you have installed the ARC client) do
 arcinfo -C <hostname-of-arc-ce>
 ```
 
+If the output looks anything like this: 
+
+```
+Computing service: galaxy-arc-test-fresh (production)
+  Information endpoint: https://galaxy-arc-test-fresh.itf.uiocloud.no:443/arex (org.nordugrid.arcrest)
+  Submission endpoint: https://galaxy-arc-test-fresh.itf.uiocloud.no:443/arex (status: ok, interface: org.nordugrid.arcrest)
+```
+
+You are good to go. If "ok" instead is "critical" wait a few more minutes and try again. 
+
+
 If all ok, attempt to submit a job
 
 ```
