@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set +e
+
+
+dnf install -y nordugrid-arc-client nordugrid-arc-arex
+
+echo "sudo $(arcctl test-jwt init --force | tail -n 1)"
+$(arcctl test-jwt init --force | tail -n 1)
+
+arcctl test-ca init --force
+arcctl test-ca hostcert --force
+arcctl test-ca usercert -i root
+arcproxy
+
+echo "cat /etc/arc.conf"
+cat /etc/arc.conf
+
+echo "arcctl config dump"
+arcctl config dump
+
+echo "arcctl config verify"
+arcctl  config verify 
+
+echo "ps aux | grep arched"
+ps aux | grep arched
+
+echo "Starting AREX service: /usr/share/arc/arc-arex-start"
+/usr/share/arc/arc-arex-start &
+
+echo "Starting AREX-WS: /usr/share/arc/arc-arex-ws-start"
+/usr/share/arc/arc-arex-ws-start &
+
+
+echo "ps aux | grep arched"
+ps aux | grep arched
+
+#wait
+sleep infinity
